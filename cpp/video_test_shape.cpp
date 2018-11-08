@@ -7,20 +7,18 @@
 #include <dlib/image_processing/render_face_detections.h>
 #include <dlib/image_processing.h>
 
-//Intrisics can be calculated using opencv sample code under opencv/sources/samples/cpp/tutorial_code/calib3d
-//Normally, you can also apprximate fx and fy by image width, cx by half image width, cy by half image height instead
-double K[9] = { 6.5308391993466671e+002, 0.0, 3.1950000000000000e+002, 0.0, 6.5308391993466671e+002, 2.3950000000000000e+002, 0.0, 0.0, 1.0 };
-double D[5] = { 7.0834633684407095e-002, 6.9140193737175351e-002, 0.0, 0.0, -1.3073460323689292e+000 };
+//Intrinsics can be calculated using opencv sample code under opencv/sources/samples/cpp/tutorial_code/calib3d
+//Normally, you can also approximate fx and fy by image width, cx by half image width, cy by half image height instead
+double K[9] = {6.5308391993466671e+002, 0.0, 3.1950000000000000e+002, 0.0, 6.5308391993466671e+002, 2.3950000000000000e+002, 0.0, 0.0, 1.0};
+double D[5] = {7.0834633684407095e-002, 6.9140193737175351e-002, 0.0, 0.0, -1.3073460323689292e+000};
 
-int main()
-{
+int main() {
     //open cam
     cv::VideoCapture cap(0);
-    if (!cap.isOpened())
-        {
+    if (!cap.isOpened()) {
         std::cout << "Unable to connect to camera" << std::endl;
         return EXIT_FAILURE;
-        }
+    }
     //Load face detection and pose estimation models (dlib).
     dlib::frontal_face_detector detector = dlib::get_frontal_face_detector();
     dlib::shape_predictor predictor;
@@ -32,29 +30,29 @@ int main()
 
     //fill in 3D ref points(world coordinates), model referenced from http://aifi.isr.uc.pt/Downloads/OpenGL/glAnthropometric3DModel.cpp
     std::vector<cv::Point3d> object_pts;
-    object_pts.push_back(cv::Point3d(6.825897, 6.760612, 4.402142));     //#33 left brow left corner
-    object_pts.push_back(cv::Point3d(1.330353, 7.122144, 6.903745));     //#29 left brow right corner
-    object_pts.push_back(cv::Point3d(-1.330353, 7.122144, 6.903745));    //#34 right brow left corner
-    object_pts.push_back(cv::Point3d(-6.825897, 6.760612, 4.402142));    //#38 right brow right corner
-    object_pts.push_back(cv::Point3d(5.311432, 5.485328, 3.987654));     //#13 left eye left corner
-    object_pts.push_back(cv::Point3d(1.789930, 5.393625, 4.413414));     //#17 left eye right corner
-    object_pts.push_back(cv::Point3d(-1.789930, 5.393625, 4.413414));    //#25 right eye left corner
-    object_pts.push_back(cv::Point3d(-5.311432, 5.485328, 3.987654));    //#21 right eye right corner
-    object_pts.push_back(cv::Point3d(2.005628, 1.409845, 6.165652));     //#55 nose left corner
-    object_pts.push_back(cv::Point3d(-2.005628, 1.409845, 6.165652));    //#49 nose right corner
-    object_pts.push_back(cv::Point3d(2.774015, -2.080775, 5.048531));    //#43 mouth left corner
-    object_pts.push_back(cv::Point3d(-2.774015, -2.080775, 5.048531));   //#39 mouth right corner
-    object_pts.push_back(cv::Point3d(0.000000, -3.116408, 6.097667));    //#45 mouth central bottom corner
-    object_pts.push_back(cv::Point3d(0.000000, -7.415691, 4.070434));    //#6 chin corner
+    object_pts.push_back(cv::Point3d(6.825897, 6.760612, 4.402142)); //#33 left brow left corner
+    object_pts.push_back(cv::Point3d(1.330353, 7.122144, 6.903745)); //#29 left brow right corner
+    object_pts.push_back(cv::Point3d(-1.330353, 7.122144, 6.903745)); //#34 right brow left corner
+    object_pts.push_back(cv::Point3d(-6.825897, 6.760612, 4.402142)); //#38 right brow right corner
+    object_pts.push_back(cv::Point3d(5.311432, 5.485328, 3.987654)); //#13 left eye left corner
+    object_pts.push_back(cv::Point3d(1.789930, 5.393625, 4.413414)); //#17 left eye right corner
+    object_pts.push_back(cv::Point3d(-1.789930, 5.393625, 4.413414)); //#25 right eye left corner
+    object_pts.push_back(cv::Point3d(-5.311432, 5.485328, 3.987654)); //#21 right eye right corner
+    object_pts.push_back(cv::Point3d(2.005628, 1.409845, 6.165652)); //#55 nose left corner
+    object_pts.push_back(cv::Point3d(-2.005628, 1.409845, 6.165652)); //#49 nose right corner
+    object_pts.push_back(cv::Point3d(2.774015, -2.080775, 5.048531)); //#43 mouth left corner
+    object_pts.push_back(cv::Point3d(-2.774015, -2.080775, 5.048531)); //#39 mouth right corner
+    object_pts.push_back(cv::Point3d(0.000000, -3.116408, 6.097667)); //#45 mouth central bottom corner
+    object_pts.push_back(cv::Point3d(0.000000, -7.415691, 4.070434)); //#6 chin corner
 
     //2D ref points(image coordinates), referenced from detected facial feature
     std::vector<cv::Point2d> image_pts;
 
     //result
-    cv::Mat rotation_vec;                           //3 x 1
-    cv::Mat rotation_mat;                           //3 x 3 R
-    cv::Mat translation_vec;                        //3 x 1 T
-    cv::Mat pose_mat = cv::Mat(3, 4, CV_64FC1);     //3 x 4 R | T
+    cv::Mat rotation_vec; //3 x 1
+    cv::Mat rotation_mat; //3 x 3 R
+    cv::Mat translation_vec; //3 x 1 T
+    cv::Mat pose_mat = cv::Mat(3, 4, CV_64FC1); //3 x 4 R | T
     cv::Mat euler_angle = cv::Mat(3, 1, CV_64FC1);
 
     //reproject 3D points world coordinate axis to verify result pose
@@ -81,8 +79,7 @@ int main()
     std::ostringstream outtext;
 
     //main loop
-    while (1)
-    {
+    while (1) {
         // Grab a frame
         cv::Mat temp;
         cap >> temp;
@@ -92,16 +89,14 @@ int main()
         std::vector<dlib::rectangle> faces = detector(cimg);
 
         // Find the pose of each face
-        if (faces.size() > 0)
-            {
+        if (faces.size() > 0) {
             //track features
             dlib::full_object_detection shape = predictor(cimg, faces[0]);
 
             //draw features
-            for (unsigned int i = 0; i < 68; ++i)
-                {
+            for (unsigned int i = 0; i < 68; ++i) {
                 cv::circle(temp, cv::Point(shape.part(i).x(), shape.part(i).y()), 2, cv::Scalar(0, 0, 255), -1);
-                }
+            }
 
             //fill in 2D ref points, annotations follow https://ibug.doc.ic.ac.uk/resources/300-W/
             image_pts.push_back(cv::Point2d(shape.part(17).x(), shape.part(17).y())); //#17 left brow left corner
@@ -117,7 +112,7 @@ int main()
             image_pts.push_back(cv::Point2d(shape.part(48).x(), shape.part(48).y())); //#48 mouth left corner
             image_pts.push_back(cv::Point2d(shape.part(54).x(), shape.part(54).y())); //#54 mouth right corner
             image_pts.push_back(cv::Point2d(shape.part(57).x(), shape.part(57).y())); //#57 mouth central bottom corner
-            image_pts.push_back(cv::Point2d(shape.part(8).x(), shape.part(8).y()));   //#8 chin corner
+            image_pts.push_back(cv::Point2d(shape.part(8).x(), shape.part(8).y())); //#8 chin corner
 
             //calc pose
             cv::solvePnP(object_pts, image_pts, cam_matrix, dist_coeffs, rotation_vec, translation_vec);
@@ -156,15 +151,14 @@ int main()
             outtext.str("");
 
             image_pts.clear();
-            }
+        }
 
         //press esc to end
         cv::imshow("demo", temp);
         unsigned char key = cv::waitKey(1);
-        if (key == 27)
-            {
+        if (key == 27) {
             break;
-            }
+        }
     }
 
     return 0;
